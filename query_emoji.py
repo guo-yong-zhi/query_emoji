@@ -31,6 +31,7 @@ if __name__ == '__main__':
     query_emoji_test('伤心欲绝')
     query_emoji_test('鼠标')
     query_emoji_test('起重机')
+    query_emoji_test('鹤')
     query_emoji_test('喝酒', 10)
     query_emoji_test('剪刀')
     query_emoji_test('黑人拳头')
