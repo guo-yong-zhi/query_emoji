@@ -31,6 +31,13 @@ if __name__ == '__main__':
         r = E.query(description, n_candidates)
         print(f'{description}:', " | ".join(r))
         # print("\ttime:", time.time() - start)
+    while True:
+        input_ = input('请输入描述：')
+        if input_ == 'q' or input_ == '':
+            break
+        elif input_ == 'e':
+            exit()
+        query_emoji_test(input_, 10)
     query_emoji_test('开心')
     query_emoji_test('兴高采烈')
     query_emoji_test('伤心欲绝')
