@@ -2,28 +2,28 @@ from transformers import AutoModel
 from numpy.linalg import norm
 import numpy as np
 
-model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True) # trust_remote_code is needed to use the encode method
+class QueryEmoji:
+    def __init__(self, feature):
+        self.model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
+        emoji = np.load(feature, allow_pickle=True).item()
+        self.emoji_features = emoji['emoji_features']
+        self.emoji_list = emoji['emoji_list']
 
-emoji = np.load('emoji.npy', allow_pickle=True).item()
-emoji_features = emoji['emoji_features']
-emoji_list = emoji['emoji_list']
-emoji_code_list = emoji['emoji_code_list']
-
-def query_emoji(description, n_candidates=5, verbose=False):
-    query = model.encode(description)
-    query = query / norm(query)
-    scores = emoji_features @ query
-    inds = np.argpartition(-scores, min(n_candidates, len(emoji_list)-1))[:n_candidates]
-    if verbose:
-        return emoji_list[inds].tolist(), emoji_code_list[inds].tolist(), scores[inds].tolist()
-    else:
-        return emoji_list[inds].tolist()
-
+    def query(self, description, n_candidates=5, return_score=False):
+        query = self.model.encode(description)
+        query = query / norm(query)
+        scores = self.emoji_features @ query
+        inds = np.argpartition(-scores, min(n_candidates, len(self.emoji_list)-1))[:n_candidates]
+        if return_score:
+            return self.emoji_list[inds].tolist(), scores[inds].tolist()
+        else:
+            return self.emoji_list[inds].tolist()
 if __name__ == '__main__':
     import time
+    E = QueryEmoji('emoji.npy')
     def query_emoji_test(description, n_candidates=5):
         start = time.time()
-        r = query_emoji(description, n_candidates)
+        r = E.query(description, n_candidates)
         print(f'{description}:', " ".join(r))
         # print("\ttime:", time.time() - start)
     query_emoji_test('开心')
