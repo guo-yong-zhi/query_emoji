@@ -2,7 +2,7 @@
 Query emoji with natural language, Chinese or English.
 
 ## Install
-You should first git clone this repo and run `pip install -r requirements.txt`. Then you can run `python query_emoji.py` to see the result. You can also use it in your code:
+You should first `git clone --depth 1 https://github.com/guo-yong-zhi/query_emoji` and run `pip install -r requirements.txt`. Then you can run `python query_emoji.py` to see the result. You can also use it in your code:
 ```python
 from query_emoji import QueryEmoji
 E = QueryEmoji()
