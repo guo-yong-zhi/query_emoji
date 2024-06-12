@@ -1,11 +1,15 @@
+import os
 from transformers import AutoModel
 from numpy.linalg import norm
 import numpy as np
 
 class QueryEmoji:
-    def __init__(self, feature):
+    def __init__(self, feature_fn=None):
+        if feature_fn is None:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            feature_fn = os.path.join(current_dir, 'emoji.npy')
         self.model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
-        emoji = np.load(feature, allow_pickle=True).item()
+        emoji = np.load(feature_fn, allow_pickle=True).item()
         self.emoji_features = emoji['emoji_features']
         self.emoji_list = emoji['emoji_list']
 
@@ -18,9 +22,10 @@ class QueryEmoji:
             return self.emoji_list[inds].tolist(), scores[inds].tolist()
         else:
             return self.emoji_list[inds].tolist()
+
 if __name__ == '__main__':
     import time
-    E = QueryEmoji('/data/clipx/query_emoji/emoji.npy')
+    E = QueryEmoji()
     def query_emoji_test(description, n_candidates=5):
         start = time.time()
         r = E.query(description, n_candidates)
