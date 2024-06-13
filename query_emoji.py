@@ -15,9 +15,10 @@ class QueryEmoji:
 
     def query(self, description, n_candidates=5, return_score=False):
         query = self.model.encode(description)
-        query = query / norm(query)
+        query /= norm(query)
         scores = self.emoji_features @ query
         inds = np.argpartition(-scores, min(n_candidates, len(self.emoji_list)-1))[:n_candidates]
+        inds = inds[np.argsort(-scores[inds])]
         if return_score:
             return self.emoji_list[inds].tolist(), scores[inds].tolist()
         else:
@@ -44,6 +45,7 @@ if __name__ == '__main__':
     query_emoji_test('鼠标')
     query_emoji_test('起重机')
     query_emoji_test('鹤')
+    query_emoji_test('crane')
     query_emoji_test('喝酒', 10)
     query_emoji_test('剪刀')
     query_emoji_test('黑人拳头')
